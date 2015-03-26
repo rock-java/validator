@@ -12,16 +12,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javafx.scene.input.DataFormat;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.hamcrest.core.IsNot;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;

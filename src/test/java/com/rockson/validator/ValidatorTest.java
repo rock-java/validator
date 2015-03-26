@@ -53,4 +53,10 @@ public class ValidatorTest {
 	public void isISBNTrue(){
 		Assert.assertTrue(Validator.isISBN("9787040396638"));
 	}
+	
+	@Test
+	public void md5Test(){
+		Assert.assertTrue("5d41402abc4b2a76b9719d911017c592".equals(Validator.md5("hello")));
+	}
+	
 }
