@@ -43,11 +43,19 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.eluder.coveralls</groupId>
+				<artifactId>coveralls-maven-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<repoToken>2bKCoghQXF8BPAgxqhIo2lVjrhRaSo3wd</repoToken>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
 				<version>2.7</version>
 				<configuration>
-					<check>
+					<!-- <check>
 						<branchRate>85</branchRate>
 						<lineRate>85</lineRate>
 						<haltOnFailure>true</haltOnFailure>
@@ -55,11 +63,12 @@
 						<totalLineRate>85</totalLineRate>
 						<packageLineRate>85</packageLineRate>
 						<packageBranchRate>85</packageBranchRate>
-					</check>
+					</check> -->
 					<formats>
 						<format>html</format>
 						<format>xml</format>
 					</formats>
+					<aggregate>true</aggregate>
 				</configuration>
 				<executions>
 					<execution>
