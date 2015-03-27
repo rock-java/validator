@@ -1,4 +1,7 @@
 # validator
+[![Build Status](https://travis-ci.org/rock-java/validator.svg)](https://travis-ci.org/rock-java/validator)
+[![Coverage Status](https://coveralls.io/repos/rock-java/validator/badge.svg?branch=master)](https://coveralls.io/r/rock-java/validator?branch=master)
+
 validator for Java , inspired by chriso's [validator.js](https://github.com/chriso/validator.js)
 
 
