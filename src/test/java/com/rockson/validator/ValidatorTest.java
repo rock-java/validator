@@ -46,15 +46,6 @@ public class ValidatorTest {
 		Assert.assertFalse(Validator.isEmail("xx@.com"));
 	}
 	@Test
-	public void isCreditCardTrue(){
-		Assert.assertTrue(Validator.isCreditCard("6225880170957022"));
-	}
-	@Test
-	public void isISBNTrue(){
-		Assert.assertTrue(Validator.isISBN("9787040396638"));
-	}
-	
-	@Test
 	public void md5Test(){
 		Assert.assertTrue("5d41402abc4b2a76b9719d911017c592".equals(Validator.md5("hello")));
 	}

@@ -1,7 +1,9 @@
 package com.rockson.validator;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
@@ -111,7 +113,7 @@ public class Validator {
 	 * available in isBlank().
 	 * </p>
 	 *
-	 * @param cs
+	 * @param str
 	 *            the CharSequence to check, may be null
 	 * @return {@code true} if the CharSequence is empty or null
 	 * @since 3.0 Changed signature from isEmpty(String) to isEmpty(CharSequence)
@@ -133,11 +135,9 @@ public class Validator {
 	 * StringUtils.isBlank("  bob  ") = false
 	 * </pre>
 	 *
-	 * @param cs
+	 * @param str
 	 *            the CharSequence to check, may be null
 	 * @return {@code true} if the CharSequence is null, empty or whitespace
-	 * @since 2.0
-	 * @since 3.0 Changed signature from isBlank(String) to isBlank(CharSequence)
 	 */
 	public static boolean isBlank(CharSequence str) {
 		int strLen;
@@ -156,38 +156,66 @@ public class Validator {
 	 * check if the string contains the seed.
 	 * 
 	 * @param str
+	 *            a string
 	 * @param seed
-	 * @return
+	 *            contained part
+	 * @return true if str contains seed
 	 */
 	public static boolean contains(String str, String seed) {
 		return str.contains(seed);
 	}
 
 	/**
-	 * check if string matches the pattern. Either matches('foo', /foo/i) or matches('foo', 'foo', 'i').
+	 * check if string matches the pattern。
 	 * 
 	 * @param str
+	 *            the string to matches
 	 * @param pattern
-	 * @param modifiers
-	 * @return
+	 *            the match pattern
+	 * @return true if matched
+	 */
+	public static boolean matches(String str, String pattern) {
+		return Pattern.compile(pattern).matcher(str).matches();
+	}
+
+	/**
+	 * check if string matches the pattern。
+	 * 
+	 * @param str
+	 *            the string to matches
+	 * @param pattern
+	 *            the match pattern
+	 * @param flags
+	 *            the pattern modifiers
+	 * @return {@code true} if matched
 	 */
 	public static boolean matches(String str, String pattern, int flags) {
 		return Pattern.compile(pattern, flags).matcher(str).matches();
 	}
 
 	/**
-	 * check if the string is an email. options is an object which defaults to { allow_display_name: false,
-	 * allow_utf8_local_part: true }. If allow_display_name is set to true, the validator will also match Display Name
-	 * <email-address>. If allow_utf8_local_part is set to false, the validator will not allow any non-English UTF8
-	 * character in email address' local part.
+	 * check if the string is an email.
 	 * 
 	 * @param str
-	 * @return
+	 *            email string
+	 * @return {@code true} if matched
 	 */
 	public static boolean isEmail(String str) {
 		return isEmail(str, new EmailOptions());
 	}
 
+	/**
+	 * check if the string is an email. options is an object which defaults to { allowDisplayName: false,
+	 * allowUtf8LocalPart: true }. If allowDisplayName is set to true, the validator will also match Display Name
+	 * &lt;email-address&gt;. If allow_utf8_local_part is set to false, the validator will not allow any non-English
+	 * UTF8 character in email address' local part. {@code true} if matched
+	 * 
+	 * @param str
+	 *            email string
+	 * @param options
+	 *            email options
+	 * @return {@code true} if str is email format.
+	 */
 	public static boolean isEmail(String str, EmailOptions options) {
 		if (options.isAllowDisplayName()) {
 			Matcher displayEmail = EMAIL_DISPLAY_NAME.matcher(str);
@@ -215,17 +243,29 @@ public class Validator {
 	}
 
 	/**
-	 * check if the string is an URL. options is an object which defaults to { protocols: ['http','https','ftp'],
-	 * require_tld: true, require_protocol: false, allow_underscores: false, host_whitelist: false, host_blacklist:
-	 * false, allow_trailing_dot: false, allow_protocol_relative_urls: false }.
+	 * check if the string is an URL. using default options;
 	 * 
 	 * @param str
-	 * @return
+	 *            a url string
+	 * @return true if matched
 	 */
 	public static boolean isURL(String str) {
 		return isURL(str, new URLOptions(), new FQDNOptions());
 	}
 
+	/**
+	 * check if the string is an URL. options is an object which defaults to { protocols: ['http','https','ftp'],
+	 * requireTld: true, requireProtocol: false, allowUnderscores: false, hostWhitelist: null, hostBlacklist: null,
+	 * allowTrailingDot: false, allowProtocolRelativeUrls: false }.
+	 * 
+	 * @param url
+	 *            a url string
+	 * @param options
+	 *            urloptions
+	 * @param fqdnOptions
+	 *            the fqdn option of the url
+	 * @return true if matched
+	 */
 	public static boolean isURL(String url, URLOptions options, FQDNOptions fqdnOptions) {
 		if (isBlank(url) || url.length() >= 2083) {
 			return false;
@@ -306,16 +346,26 @@ public class Validator {
 	}
 
 	/**
-	 * check if the string is a fully qualified domain name (e.g. domain.com). options is an object which defaults to {
-	 * require_tld: true, allow_underscores: false, allow_trailing_dot: false }.
+	 * check if the string is a fully qualified domain name (e.g. domain.com).
 	 * 
 	 * @param str
-	 * @return
+	 *            domain string
+	 * @return true if matched
 	 */
 	public static boolean isFQDN(String str) {
 		return isFQDN(str, new FQDNOptions());
 	}
 
+	/**
+	 * check if the string is a fully qualified domain name (e.g. domain.com). options is an object which defaults to {
+	 * requireTld: true, allowUnderscores: false, allowTrailing_dot: false }.
+	 * 
+	 * @param str
+	 *            domain
+	 * @param options
+	 *            domain options
+	 * @return true if matched
+	 */
 	public static boolean isFQDN(String str, FQDNOptions options) {
 		/* Remove the optional trailing dot before checking validity */
 		if (options.isAllowTrailingDot() && str.charAt(str.length() - 1) == '.') {
@@ -326,7 +376,7 @@ public class Validator {
 			String tld = parts[0];
 			if (parts.length < 1
 					|| !Pattern.compile("^([a-z\u00a1-\uffff]{2,}|xn[a-z0-9-]{2,})$", Pattern.CASE_INSENSITIVE)
-							.matcher(tld).matches()) { // /i.test(tld)
+							.matcher(tld).matches()) {
 				return false;
 			}
 		}
@@ -353,12 +403,22 @@ public class Validator {
 	 * check if the string is an IP (version 4 or 6).
 	 * 
 	 * @param str
-	 * @return
+	 *            ip string
+	 * @return true if matched
 	 */
 	public static boolean isIP(String str) {
 		return isIP(str, IPVersion.ipv4) || isIP(str, IPVersion.ipv6);
 	}
 
+	/**
+	 * check if the string is an IP with specified ip version.
+	 * 
+	 * @param str
+	 *            ip string
+	 * @param version
+	 *            ip version
+	 * @return true if matched
+	 */
 	public static boolean isIP(String str, IPVersion version) {
 		if (IPVersion.ipv4.equals(version)) {
 			if (!IPV4_MAYBE.matcher(str).matches()) {
@@ -421,74 +481,211 @@ public class Validator {
 	 * check if the string contains only letters (a-zA-Z).
 	 * 
 	 * @param str
-	 * @return
+	 *            alpha string
+	 * @return true if matched
 	 */
 	public static boolean isAlpha(String str) {
 		return ALPHA.matcher(str).matches();
 	}
 
+	/**
+	 * check if the string contains only numbers.
+	 * 
+	 * @param str
+	 *            numeric string
+	 * @return true if matched
+	 */
 	public static boolean isNumeric(String str) {
 		return NUMERIC.matcher(str).matches();
 	}
 
+	/**
+	 * check if the string contains only letters and numbers.
+	 * 
+	 * @param str
+	 *            letter and number string
+	 * @return true if matched
+	 */
 	public static boolean isAlphanumeric(String str) {
 		return ALPHA_NUMERIC.matcher(str).matches();
 	}
 
+	/**
+	 * check if a string is base64 encoded.
+	 * 
+	 * @param str
+	 *            base64 encoded string
+	 * @return true if matched
+	 */
 	public static boolean isBase64(String str) {
 		return BASE64.matcher(str).matches();
 	}
 
+	/**
+	 * check if the string is a hexadecimal number.
+	 * 
+	 * @param str
+	 *            hexadecimal string
+	 * @return true if matched
+	 */
 	public static boolean isHexadecimal(String str) {
 		return HEXADECIMAL.matcher(str).matches();
 	}
 
+	/**
+	 * check if the string is a hexadecimal color.
+	 * 
+	 * @param str
+	 *            hexadecimal color string
+	 * @return true if matched
+	 */
 	public static boolean isHexColor(String str) {
 		return HEXCOLOR.matcher(str).matches();
 	}
 
+	/**
+	 * check if the string is lowercase.
+	 * 
+	 * @param str
+	 *            whole lowercase string
+	 * @return true if matched
+	 */
 	public static boolean isLowercase(String str) {
 		return str.equals(str.toLowerCase());
 	}
 
+	/**
+	 * check if the string is uppercase.
+	 * 
+	 * @param str
+	 *            whole uppercase string
+	 * @return true if matched
+	 */
 	public static boolean isUppercase(String str) {
 		return str.equals(str.toUpperCase());
 	}
 
+	/**
+	 * check if the string is an integer.
+	 * 
+	 * @param str
+	 *            integer string
+	 * @return true if matched
+	 */
 	public static boolean isInt(String str) {
 		return INT_REG.matcher(str).matches();
 	}
 
+	/**
+	 * check if the string is a float.
+	 * 
+	 * @param str
+	 *            float number string
+	 * @return true if matched
+	 */
 	public static boolean isFloat(String str) {
 		return FLOAT_REG.matcher(str).matches();
 	}
 
+	/**
+	 * check if the string is a number that's divisible by another.
+	 * 
+	 * @param str
+	 *            a number
+	 * @param number
+	 *            divisibled number
+	 * @return true if matched
+	 */
 	public static boolean isDivisibleBy(String str, int number) {
 		return toFloat(str) % number == 0;
 	}
 
+	/**
+	 * check if the string's length falls in a range.
+	 * 
+	 * @param str
+	 *            a string
+	 * @param min
+	 *            minimum length of the string
+	 * @param max
+	 *            maximum length of the string
+	 * @return true if matched
+	 */
 	public static boolean isLength(String str, int min, int max) {
 		return str.length() >= min && str.length() <= max;
 	}
 
+	/**
+	 * check if the string's length falls in a range.
+	 * 
+	 * @param min
+	 *            minimum length of the string
+	 * @param str
+	 *            a string
+	 * @return true if matched
+	 */
 	public static boolean isLength(String str, int min) {
 		return str.length() >= min;
 	}
 
+	/**
+	 * check if the string bytes's length falls in a range.
+	 * 
+	 * @param str
+	 *            a string
+	 * @param charset
+	 *            sttring charset
+	 * @param min
+	 *            minimum length of the string
+	 * @param max
+	 *            maximum length of the string
+	 * @return true if matched
+	 * @throws UnsupportedEncodingException
+	 *             if charset not support
+	 */
 	public static boolean isByteLength(String str, String charset, int min, int max)
 			throws UnsupportedEncodingException {
 		int len = str.getBytes(charset).length;
 		return len >= min && len <= max;
 	}
 
+	/**
+	 * check if the string bytes's length falls in a range.
+	 * 
+	 * @param str
+	 *            a string
+	 * @param charset
+	 *            sttring charset
+	 * @param min
+	 *            minimum length of the string
+	 * @return true if matched
+	 * @throws UnsupportedEncodingException
+	 *             if charset not support
+	 */
 	public static boolean isByteLength(String str, String charset, int min) throws UnsupportedEncodingException {
 		return str.getBytes(charset).length <= min;
 	}
 
+	/**
+	 * check if the string is a UUID (version 3, 4 or 5).
+	 * 
+	 * @param str
+	 *            uuid string
+	 * @return true if matched
+	 */
 	public static boolean isUUID(String str) {
 		return UUID.matcher(str).matches();
 	}
 
+	/**
+	 * check if the string is a UUID with specified version
+	 * 
+	 * @param str
+	 *            uuid string
+	 * @param version
+	 *            uuid version
+	 * @return true if matched
+	 */
 	public static boolean isUUID(String str, UUIDVersion version) {
 		switch (version) {
 		case uuidv3:
@@ -501,6 +698,13 @@ public class Validator {
 		return false;
 	}
 
+	/**
+	 * check if the string is a date.
+	 * 
+	 * @param str
+	 *            date string
+	 * @return true if matched
+	 */
 	public static boolean isDate(String str) {
 		DateFormat dateFormat = DateFormat.getDateInstance();
 		try {
@@ -510,14 +714,17 @@ public class Validator {
 		}
 	}
 
-	public static boolean isAfter(String str, Date date) {
-		return false;
-	}
-
-	public static boolean isBefore(String str, Date date) {
-		return false;
-	}
-
+	/**
+	 * check if the string is in a array of allowed values
+	 * 
+	 * @param <T>
+	 *            the value type
+	 * @param v
+	 *            value
+	 * @param values
+	 *            allowed values
+	 * @return true if v in values
+	 */
 	public static <T> boolean isIn(T v, T[] values) {
 		for (T t : values) {
 			if (v.equals(t)) {
@@ -527,139 +734,218 @@ public class Validator {
 		return false;
 	}
 
-	public static boolean isCreditCard(String str) {
-		String sanitized = str;// .replaceAll("[^0-9]+", "");
-		if (!CREDIT_CARD.matcher(sanitized).matches()) {
-			return false;
-		}
-		int sum = 0, tmpNum;
-		String digit;
-		boolean shouldDouble = false;
-		for (int i = sanitized.length() - 1; i >= 0; i--) {
-			digit = sanitized.substring(i, (i + 1));
-			tmpNum = Integer.valueOf(digit);// parseInt(digit, 10);
-			if (shouldDouble) {
-				tmpNum *= 2;
-				if (tmpNum >= 10) {
-					sum += ((tmpNum % 10) + 1);
-				} else {
-					sum += tmpNum;
-				}
-			} else {
-				sum += tmpNum;
-			}
-			shouldDouble = !shouldDouble;
-		}
-		return !!((sum % 10) == 0 ? !isBlank(sanitized) : false);
-	}
+	// /**
+	// *
+	// * @param str
+	// * @return true if matched
+	// */
+	// public static boolean isCreditCard(String str) {
+	// String sanitized = str;// .replaceAll("[^0-9]+", "");
+	// if (!CREDIT_CARD.matcher(sanitized).matches()) {
+	// return false;
+	// }
+	// int sum = 0, tmpNum;
+	// String digit;
+	// boolean shouldDouble = false;
+	// for (int i = sanitized.length() - 1; i >= 0; i--) {
+	// digit = sanitized.substring(i, (i + 1));
+	// tmpNum = Integer.valueOf(digit);// parseInt(digit, 10);
+	// if (shouldDouble) {
+	// tmpNum *= 2;
+	// if (tmpNum >= 10) {
+	// sum += ((tmpNum % 10) + 1);
+	// } else {
+	// sum += tmpNum;
+	// }
+	// } else {
+	// sum += tmpNum;
+	// }
+	// shouldDouble = !shouldDouble;
+	// }
+	// return !!((sum % 10) == 0 ? !isBlank(sanitized) : false);
+	// }
+	//
+	// /**
+	// *
+	// * @param str
+	// * @return true if matched
+	// */
+	// public static boolean isISIN(String str) {
+	// if (!ISIN.matcher(str).matches()) {
+	// return false;
+	// }
+	//
+	// Matcher matcher = Pattern.compile("[A-Z]").matcher(str);
+	// StringBuffer sb = new StringBuffer();
+	// while (matcher.find()) {
+	// matcher.appendReplacement(sb, Integer.valueOf(matcher.group(), 36).toString());
+	// }
+	// String checksumStr = sb.toString();
+	//
+	// int sum = 0, tmpNum;
+	// String digit;
+	// boolean shouldDouble = true;
+	// for (int i = checksumStr.length() - 2; i >= 0; i--) {
+	// digit = checksumStr.substring(i, (i + 1));
+	// tmpNum = Integer.valueOf(digit);
+	// if (shouldDouble) {
+	// tmpNum *= 2;
+	// if (tmpNum >= 10) {
+	// sum += tmpNum + 1;
+	// } else {
+	// sum += tmpNum;
+	// }
+	// } else {
+	// sum += tmpNum;
+	// }
+	// shouldDouble = !shouldDouble;
+	// }
+	//
+	// return Integer.valueOf(str.substring(str.length() - 1), 10) == (10000 - sum) % 10;
+	// }
+	//
+	// /**
+	// *
+	// * @param str
+	// * @return true if matched
+	// */
+	// public static boolean isISBN(String str) {
+	// return isISBN(str, ISBNVersion.isbn10) || isISBN(str, ISBNVersion.isbn13);
+	// }
 
-	public static boolean isISIN(String str) {
-		if (!ISIN.matcher(str).matches()) {
-			return false;
-		}
+	// public static boolean isISBN(String str, ISBNVersion version) {
+	// String sanitized = str.replaceAll("[\\s-]+", "");
+	// int checksum = 0, i;
+	// if (ISBNVersion.isbn10.equals(version)) {
+	// if (!ISBN10_MAYBE.matcher(sanitized).matches()) {
+	// return false;
+	// }
+	// for (i = 0; i < 9; i++) {
+	// checksum += (i + 1) * sanitized.charAt(i);
+	// }
+	// if (sanitized.charAt(9) == 'X') {
+	// checksum += 10 * 10;
+	// } else {
+	// checksum += 10 * sanitized.charAt(9);
+	// }
+	// if ((checksum % 11) == 0) {
+	// return !isBlank(sanitized);
+	// }
+	// } else if (ISBNVersion.isbn13.equals(version)) {
+	// if (!ISBN13_MAYBE.matcher(sanitized).matches()) {
+	// return false;
+	// }
+	// int[] factor = new int[] { 1, 3 };
+	// for (i = 0; i < 12; i++) {
+	// checksum += factor[i % 2] * sanitized.charAt(i);
+	// }
+	// if (sanitized.charAt(12) - ((10 - (checksum % 10)) % 10) == 0) {
+	// return true;
+	// }
+	// }
+	// return false;
+	// }
 
-		Matcher matcher = Pattern.compile("[A-Z]").matcher(str);
-		StringBuffer sb = new StringBuffer();
-		while (matcher.find()) {
-			matcher.appendReplacement(sb, Integer.valueOf(matcher.group(), 36).toString());
-		}
-		String checksumStr = sb.toString();
-
-		int sum = 0, tmpNum;
-		String digit;
-		boolean shouldDouble = true;
-		for (int i = checksumStr.length() - 2; i >= 0; i--) {
-			digit = checksumStr.substring(i, (i + 1));
-			tmpNum = Integer.valueOf(digit);
-			if (shouldDouble) {
-				tmpNum *= 2;
-				if (tmpNum >= 10) {
-					sum += tmpNum + 1;
-				} else {
-					sum += tmpNum;
-				}
-			} else {
-				sum += tmpNum;
-			}
-			shouldDouble = !shouldDouble;
-		}
-
-		return Integer.valueOf(str.substring(str.length() - 1), 10) == (10000 - sum) % 10;
-	}
-
-	public static boolean isISBN(String str) {
-		return isISBN(str, ISBNVersion.isbn10) || isISBN(str, ISBNVersion.isbn13);
-	}
-
-	public static boolean isISBN(String str, ISBNVersion version) {
-		String sanitized = str.replaceAll("[\\s-]+", "");
-		int checksum = 0, i;
-		if (ISBNVersion.isbn10.equals(version)) {
-			if (!ISBN10_MAYBE.matcher(sanitized).matches()) {
-				return false;
-			}
-			for (i = 0; i < 9; i++) {
-				checksum += (i + 1) * sanitized.charAt(i);
-			}
-			if (sanitized.charAt(9) == 'X') {
-				checksum += 10 * 10;
-			} else {
-				checksum += 10 * sanitized.charAt(9);
-			}
-			if ((checksum % 11) == 0) {
-				return !isBlank(sanitized);
-			}
-		} else if (ISBNVersion.isbn13.equals(version)) {
-			if (!ISBN13_MAYBE.matcher(sanitized).matches()) {
-				return false;
-			}
-			int[] factor = new int[] { 1, 3 };
-			for (i = 0; i < 12; i++) {
-				checksum += factor[i % 2] * sanitized.charAt(i);
-			}
-			if (sanitized.charAt(12) - ((10 - (checksum % 10)) % 10) == 0) {
-				return true;
-			}
-		}
-		return false;
-	}
-
+	/**
+	 * 
+	 * @param str
+	 *            mobile phone string
+	 * @param locale
+	 *            phone locale
+	 * @return true if matched
+	 */
 	public static boolean isMobilePhone(String str, PhoneLocale locale) {
 		return PHONES_REGS.get(locale).matcher(str).matches();
 	}
 
-	public static boolean isJSON(String str) {
-		return false;
-	}
-
+	/**
+	 * check if the string contains one or more multibyte chars.
+	 * 
+	 * @param str
+	 *            a string
+	 * @return true if matched
+	 */
 	public static boolean isMultibyte(String str) {
 		return MULTIBYTE.matcher(str).matches();
 	}
 
+	/**
+	 * check if the string contains ASCII chars only.
+	 * 
+	 * @param str
+	 *            a string
+	 * @return true if matched
+	 */
 	public static boolean isAscii(String str) {
 		return ASCII.matcher(str).matches();
 	}
 
+	/**
+	 * check if the string contains any full-width chars.
+	 * 
+	 * @param str
+	 *            a string
+	 * @return true if matched
+	 */
 	public static boolean isFullWidth(String str) {
 		return FULL_WIDTH.matcher(str).matches();
 	}
 
+	/**
+	 * check if the string contains any half-width chars.
+	 * 
+	 * @param str
+	 *            a string
+	 * @return true if matched
+	 */
 	public static boolean isHalfWidth(String str) {
 		return HALF_WIDTH.matcher(str).matches();
 	}
 
+	/**
+	 * check if the string contains a mixture of full and half-width chars.
+	 * 
+	 * @param str
+	 *            a string
+	 * @return true if matched
+	 */
 	public static boolean isVariableWidth(String str) {
 		return isFullWidth(str) && isHalfWidth(str);
 	}
 
+	/**
+	 * check if the string contains any surrogate pairs chars.
+	 * 
+	 * @param str
+	 *            a string
+	 * @return true if matched
+	 */
 	public static boolean isSurrogatePair(String str) {
 		return SURROGATE_PAIR.matcher(str).matches();
 	}
 
+	/**
+	 * check if the string is a valid hex-encoded representation of a MongoDB ObjectId.
+	 * 
+	 * @param str
+	 *            a string
+	 * @return true if matched
+	 */
 	public static boolean isMongoId(String str) {
 		return isHexadecimal(str) && 24 == str.length();
 	}
 
+	/**
+	 * check the |num - value| &lt;= d
+	 * 
+	 * @param num
+	 *            a number
+	 * @param value
+	 *            another number
+	 * @param d
+	 *            distance
+	 * @return true if |num - value| &lt;= d
+	 */
 	public static boolean diff(String num, double value, String d) {
 		BigDecimal n1 = new BigDecimal(num);
 		BigDecimal n2 = new BigDecimal(value);
@@ -667,6 +953,35 @@ public class Validator {
 		return n1.subtract(n2).abs().compareTo(n3) < 0;
 	}
 
+	/**
+	 * check the |num - value| &lt;= d
+	 * 
+	 * @param num
+	 *            a number
+	 * @param value
+	 *            another number
+	 * @param d
+	 *            distance
+	 * @return true if |num - value| &lt;= d
+	 */
+	public static boolean diff(String num, String value, String d) {
+		BigDecimal n1 = new BigDecimal(num);
+		BigDecimal n2 = new BigDecimal(value);
+		BigDecimal n3 = new BigDecimal(d).abs();
+		return n1.subtract(n2).abs().compareTo(n3) <= 0;
+	}
+
+	/**
+	 * check the |num - value| &lt;= d
+	 * 
+	 * @param num
+	 *            a number
+	 * @param value
+	 *            another number
+	 * @param d
+	 *            distance
+	 * @return true if |num - value| &lt;= d
+	 */
 	public static boolean diff(String num, double value, double d) {
 		BigDecimal n1 = new BigDecimal(num);
 		BigDecimal n2 = new BigDecimal(value);
@@ -679,35 +994,88 @@ public class Validator {
 	 */
 
 	/**
+	 * parse data with specified format
 	 * 
 	 * @param str
+	 *            data string
 	 * @param format
-	 * @return
+	 *            date format
+	 * @return str's date
 	 * @throws ParseException
+	 *             bad date string or format
 	 */
 	public static Date parseDate(String str, String format) throws ParseException {
 		return new SimpleDateFormat(format).parse(str);
 	}
+
+	/**
+	 * format a date to string date string
+	 * 
+	 * @param date
+	 *            a date
+	 * @param format
+	 *            a date format
+	 * @return the string of the date
+	 * @throws ParseException
+	 *             bad date format
+	 */
 	public static String formatDate(Date date, String format) throws ParseException {
 		return new SimpleDateFormat(format).format(date);
 	}
 
+	/**
+	 * convert number string to int
+	 * 
+	 * @param str
+	 *            integer string
+	 * @return int
+	 */
 	public static int toInt(String str) {
 		return Integer.valueOf(str);
 	}
 
+	/**
+	 * convert number string to int in specified radix
+	 * 
+	 * @param str
+	 *            number string
+	 * @param radix
+	 *            the radix of the number string
+	 * @return int
+	 */
 	public static int toInt(String str, int radix) {
 		return Integer.valueOf(str, radix);
 	}
 
+	/**
+	 * convert number string to float
+	 * 
+	 * @param str
+	 *            a float string
+	 * @return float
+	 */
 	public static float toFloat(String str) {
 		return Float.valueOf(str);
 	}
 
+	/**
+	 * convert number string to double
+	 * 
+	 * @param str
+	 *            a double string
+	 * @return double
+	 */
 	public static double toDouble(String str) {
 		return Double.valueOf(str);
 	}
 
+	/**
+	 * convert true string to boolean
+	 * 
+	 * @param str
+	 *            a string
+	 * @return true if "true" equals str(ignore case) or "1" equals str
+	 */
 	public static boolean toBoolean(String str) {
 		if ("true".equalsIgnoreCase(str) || "1".equals(str)) {
 			return true;
@@ -715,33 +1083,92 @@ public class Validator {
 		return false;
 	}
 
-	public static boolean trim(String str) {
-		return false;
+	/**
+	 * trim whitespaces from both sides of the input.
+	 * 
+	 * @param str
+	 *            a string
+	 * @return trimed string
+	 */
+	public static String trim(String str) {
+		return str.trim();
 	}
 
+	/**
+	 * trim characters from both sides of the input.
+	 * 
+	 * @param str
+	 *            a string
+	 * @param chars
+	 *            trim part
+	 * @return trimed string
+	 */
+	public static String trim(String str, String chars) {
+		return rtrim(ltrim(str, chars), chars);
+	}
+
+	/**
+	 * trim whitespaces from the left-side of the input.
+	 * 
+	 * @param str
+	 *            a string
+	 * @return trimed string
+	 */
 	public static String ltrim(String str) {
 		return null;
 	}
 
-	public static String ltrim(String str, String part) {
-		if (0 == str.indexOf(part)) {
-			return str.substring(part.length());
+	/**
+	 * trim characters from the left-side of the input.
+	 * 
+	 * @param str
+	 *            a string
+	 * @param chars
+	 *            trim part
+	 * @return trimed string
+	 */
+	public static String ltrim(String str, String chars) {
+		if (0 == str.indexOf(chars)) {
+			return str.substring(chars.length());
 		}
 		return str;
 	}
 
+	/**
+	 * trim whitespaces from the right-side of the input.
+	 * 
+	 * @param str
+	 *            a string
+	 * @return trimed string
+	 */
 	public static String rtrim(String str) {
 		return null;
 	}
 
-	public static String rtrim(String str, String part) {
-		int i = str.lastIndexOf(part);
-		if (i == str.length() - part.length()) {
+	/**
+	 * trim characters from the right-side of the input.
+	 * 
+	 * @param str
+	 *            a string
+	 * @param chars
+	 *            trim part
+	 * @return the trimed string
+	 */
+	public static String rtrim(String str, String chars) {
+		int i = str.lastIndexOf(chars);
+		if (i == str.length() - chars.length()) {
 			return str.substring(0, i);
 		}
 		return str;
 	}
 
+	/**
+	 * replace &lt;, &gt;, &amp;, ', " and / with HTML entities.
+	 * 
+	 * @param str
+	 *            a string
+	 * @return the escpaed string
+	 */
 	public static String escape(String str) {
 		Matcher matcher = Pattern.compile("").matcher(str);
 		Map<String, String> map = new HashMap<String, String>();
@@ -759,23 +1186,67 @@ public class Validator {
 		return sb.toString();
 	}
 
+	/**
+	 * remove characters with a numerical value &lt; 32 and 127, mostly control characters
+	 * 
+	 * @param str
+	 *            a string
+	 * @return the striped string
+	 */
 	public static String stripLow(String str) {
 		return stripLow(str, false);
 	}
 
+	/**
+	 * remove characters with a numerical value &lt; 32 and 127, mostly control characters. If keepNewLines is true,
+	 * newline characters are preserved (\n and \r, hex 0xA and 0xD)
+	 * 
+	 * @param str
+	 *            a string
+	 * @param keepNewLines
+	 *            If keepNewLines is true, newline characters are preserved (\n and \r, hex 0xA and 0xD)
+	 * @return the striped string
+	 */
 	public static String stripLow(String str, boolean keepNewLines) {
 		String chars = keepNewLines ? "\\x00-\\x09\\x0B\\x0C\\x0E-\\x1F\\x7F" : "\\x00-\\x1F\\x7F";
 		return blacklist(str, chars);
 	}
 
+	/**
+	 * remove characters that do not appear in the whitelist. The characters are used in a RegExp and so you will need
+	 * to escape some chars, e.g. whitelist(input, '\[\]').
+	 * 
+	 * @param str
+	 *            a string
+	 * @param chars
+	 *            The characters are used in a RegExp
+	 * @return a filtered string
+	 */
 	public static String whitelist(String str, String chars) {
 		return str.replaceAll("[^" + chars + "]+", "");
 	}
 
+	/**
+	 * 
+	 * remove characters that appear in the blacklist. The characters are used in a RegExp and so you will need to
+	 * escape some chars, e.g. blacklist(input, '\[\]').
+	 * 
+	 * @param str
+	 *            a string
+	 * @param chars
+	 *            The characters are used in a RegExp
+	 * @return a filtered string
+	 */
 	public static String blacklist(String str, String chars) {
 		return str.replaceAll("[" + chars + "]+", "");
 	}
 
+	/**
+	 * used for MessageDigest
+	 * 
+	 * @param bs
+	 * @return
+	 */
 	static String toHexString(byte[] bs) {
 		char[] strDigits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 		int l = bs.length;
@@ -790,6 +1261,13 @@ public class Validator {
 
 	}
 
+	/**
+	 * md5 a string
+	 * 
+	 * @param str
+	 *            a string
+	 * @return the hexadecimal string of the md5 result
+	 */
 	public static String md5(String str) {
 		try {
 			return sig("MD5", str);
@@ -798,6 +1276,13 @@ public class Validator {
 		}
 	}
 
+	/**
+	 * sha1 a string
+	 * 
+	 * @param str
+	 *            a string
+	 * @return the hexadecimal string of the sha1 result
+	 */
 	public static String sha1(String str) {
 		try {
 			return sig("SHA1", str);
@@ -806,6 +1291,15 @@ public class Validator {
 		}
 	}
 
+	/**
+	 * md5 a InputStream,stream not closed
+	 * 
+	 * @param in
+	 *            a inputstream
+	 * @return the hexadecimal string of the md5 result
+	 * @throws IOException
+	 *             bad InputStream
+	 */
 	public static String md5(InputStream in) throws IOException {
 		try {
 			return sig("MD5", in);
@@ -814,6 +1308,15 @@ public class Validator {
 		}
 	}
 
+	/**
+	 * sha1 a InputStream,stream not closed
+	 * 
+	 * @param in
+	 *            a InputStream
+	 * @return the hexadecimal string of the sha1 result
+	 * @throws IOException
+	 *             bad InputStream
+	 */
 	public static String sha1(InputStream in) throws IOException {
 		try {
 			return sig("SHA1", in);
@@ -822,12 +1325,36 @@ public class Validator {
 		}
 	}
 
+	/**
+	 * generate a signature for the string with specified algorithm.
+	 * 
+	 * @param alg
+	 *            a supported algorithm , such as 'md5','sha1'
+	 * @param str
+	 *            a string
+	 * @return the hexadecimal string of the encrypted result
+	 * @throws NoSuchAlgorithmException
+	 *             if algorithm not to be supported
+	 */
 	public static String sig(String alg, String str) throws NoSuchAlgorithmException {
 		MessageDigest digest = MessageDigest.getInstance(alg);
 		digest.update(str.getBytes());
 		return toHexString(digest.digest());
 	}
 
+	/**
+	 * generate a signature for the InputStream with specified algorithm.
+	 * 
+	 * @param alg
+	 *            a supported algorithm , such as 'md5','sha1'
+	 * @param in
+	 *            a InputStream
+	 * @return the hexadecimal string of the encrypted result
+	 * @throws NoSuchAlgorithmException
+	 *             if algorithm not to be supported
+	 * @throws IOException
+	 *             bad InputStream
+	 */
 	public static String sig(String alg, InputStream in) throws NoSuchAlgorithmException, IOException {
 		MessageDigest digest = MessageDigest.getInstance(alg);
 		byte[] buffer = new byte[1024];
@@ -838,22 +1365,77 @@ public class Validator {
 		return toHexString(digest.digest());
 	}
 
+	/**
+	 * encode a string to base64 string
+	 * 
+	 * @param str
+	 *            a string
+	 * @return base64 encoded string
+	 */
 	public static String encodeBase64(String str) {
 		return encodeBase64(str.getBytes());
 	}
 
+	/**
+	 * encode a byte array to base64 string
+	 * 
+	 * @param bs
+	 *            a byte array
+	 * @return base64 encoded string
+	 */
 	public static String encodeBase64(byte[] bs) {
 		return new BASE64Encoder().encode(bs);
 	}
 
+	/**
+	 * encode a ByteBuffer to base64 string
+	 * 
+	 * @param bs
+	 *            a ByteBuffer
+	 * @return base64 encoded string
+	 */
 	public static String encodeBase64(ByteBuffer bs) {
 		return new BASE64Encoder().encode(bs);
 	}
 
+	/**
+	 * encode a InputStream to base64 string , InputStream not close.
+	 * 
+	 * @param in
+	 *            a InputStream
+	 * @return base64 encoded string
+	 * @throws IOException
+	 *             bad InputStream
+	 */
+	public static String encodeBase64(InputStream in) throws IOException {
+		BASE64Encoder encoder = new BASE64Encoder();
+		OutputStream out = new ByteArrayOutputStream();
+		encoder.encode(in, out);
+		return out.toString();
+	}
+
+	/**
+	 * decode a base64 encoded string
+	 * 
+	 * @param str
+	 *            a base64 encoded string
+	 * @return a decoded bytes
+	 * @throws IOException
+	 *             bad base64 encoded string
+	 */
 	public static byte[] decodeBase64(String str) throws IOException {
 		return new BASE64Decoder().decodeBuffer(str);
 	}
 
+	/**
+	 * decode a base64 encoded string to string
+	 * 
+	 * @param str
+	 *            a base64 encoded string
+	 * @return a decoded string
+	 * @throws IOException
+	 *             bad base64 encoded string
+	 */
 	public static String decodeBase64AsString(String str) throws IOException {
 		return new String(decodeBase64(str));
 	}
