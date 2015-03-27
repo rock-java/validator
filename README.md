@@ -4,16 +4,12 @@ validator for Java , inspired by chriso's [validator.js](https://github.com/chri
 
 ```java
 import com.rockson.validator.Validator;
-import org.junit.Assert;
-import org.junit.Test;
 
 public void test(){
-	Assert.assertTrue(Validator.isURL("http://www.google.com"));
-	Assert.assertTrue(Validator.isEmail("xxx@gmail.com"));
-	Assert.assertTrue(Validator.isFQDN("www.google.com"));
-	Assert.assertTrue(Validator.md5("www.google.com"));
-	
-	Assert.assertTrue("5d41402abc4b2a76b9719d911017c592".equals(Validator.md5("hello")));
+	Validator.isURL("http://www.google.com")); //should to be true
+	Validator.isEmail("xxx@gmail.com"));	//should to be true
+	Validator.isFQDN("www.google.com"));	//should to be true
+	Validator.md5("hello"));				//should to be 5d41402abc4b2a76b9719d911017c592
 }
 
 ```
