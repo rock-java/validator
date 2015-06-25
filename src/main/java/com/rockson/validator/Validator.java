@@ -162,6 +162,7 @@ public class Validator {
 	 * @return true if str contains seed
 	 */
 	public static boolean contains(String str, String seed) {
+		if(null == str) return false;
 		return str.contains(seed);
 	}
 
@@ -175,6 +176,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean matches(String str, String pattern) {
+		if(null == str) return false;
 		return Pattern.compile(pattern).matcher(str).matches();
 	}
 
@@ -190,6 +192,7 @@ public class Validator {
 	 * @return {@code true} if matched
 	 */
 	public static boolean matches(String str, String pattern, int flags) {
+		if(null == str) return false;
 		return Pattern.compile(pattern, flags).matcher(str).matches();
 	}
 
@@ -201,6 +204,7 @@ public class Validator {
 	 * @return {@code true} if matched
 	 */
 	public static boolean isEmail(String str) {
+		if(null == str) return false;
 		return isEmail(str, new EmailOptions());
 	}
 
@@ -217,6 +221,7 @@ public class Validator {
 	 * @return {@code true} if str is email format.
 	 */
 	public static boolean isEmail(String str, EmailOptions options) {
+		if(null == str) return false;
 		if (options.isAllowDisplayName()) {
 			Matcher displayEmail = EMAIL_DISPLAY_NAME.matcher(str);
 			if (displayEmail.matches()) {
@@ -250,6 +255,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isURL(String str) {
+		if(null == str) return false;
 		return isURL(str, new URLOptions(), new FQDNOptions());
 	}
 
@@ -267,6 +273,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isURL(String url, URLOptions options, FQDNOptions fqdnOptions) {
+		if(null == url) return false;
 		if (isBlank(url) || url.length() >= 2083) {
 			return false;
 		}
@@ -353,6 +360,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isFQDN(String str) {
+		if(null == str) return false;
 		return isFQDN(str, new FQDNOptions());
 	}
 
@@ -367,6 +375,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isFQDN(String str, FQDNOptions options) {
+		if(null == str) return false;
 		/* Remove the optional trailing dot before checking validity */
 		if (options.isAllowTrailingDot() && str.charAt(str.length() - 1) == '.') {
 			str = str.substring(0, str.length() - 1);
@@ -407,6 +416,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isIP(String str) {
+		if(null == str) return false;
 		return isIP(str, IPVersion.ipv4) || isIP(str, IPVersion.ipv6);
 	}
 
@@ -420,6 +430,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isIP(String str, IPVersion version) {
+		if(null == str) return false;
 		if (IPVersion.ipv4.equals(version)) {
 			if (!IPV4_MAYBE.matcher(str).matches()) {
 				return false;
@@ -485,6 +496,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isAlpha(String str) {
+		if(null == str) return false;
 		return ALPHA.matcher(str).matches();
 	}
 
@@ -496,6 +508,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isNumeric(String str) {
+		if(null == str) return false;
 		return NUMERIC.matcher(str).matches();
 	}
 
@@ -507,6 +520,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isAlphanumeric(String str) {
+		if(null == str) return false;
 		return ALPHA_NUMERIC.matcher(str).matches();
 	}
 
@@ -518,6 +532,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isBase64(String str) {
+		if(null == str) return false;
 		return BASE64.matcher(str).matches();
 	}
 
@@ -529,6 +544,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isHexadecimal(String str) {
+		if(null == str) return false;
 		return HEXADECIMAL.matcher(str).matches();
 	}
 
@@ -540,6 +556,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isHexColor(String str) {
+		if(null == str) return false;
 		return HEXCOLOR.matcher(str).matches();
 	}
 
@@ -551,6 +568,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isLowercase(String str) {
+		if(null == str) return false;
 		return str.equals(str.toLowerCase());
 	}
 
@@ -562,6 +580,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isUppercase(String str) {
+		if(null == str) return false;
 		return str.equals(str.toUpperCase());
 	}
 
@@ -573,6 +592,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isInt(String str) {
+		if(null == str) return false;
 		return INT_REG.matcher(str).matches();
 	}
 
@@ -584,6 +604,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isFloat(String str) {
+		if(null == str) return false;
 		return FLOAT_REG.matcher(str).matches();
 	}
 
@@ -597,6 +618,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isDivisibleBy(String str, int number) {
+		if(null == str || 0 == number) return false;
 		return toFloat(str) % number == 0;
 	}
 
@@ -612,6 +634,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isLength(String str, int min, int max) {
+		if(null == str) return false;
 		return str.length() >= min && str.length() <= max;
 	}
 
@@ -625,6 +648,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isLength(String str, int min) {
+		if(null == str) return false;
 		return str.length() >= min;
 	}
 
@@ -645,6 +669,7 @@ public class Validator {
 	 */
 	public static boolean isByteLength(String str, String charset, int min, int max)
 			throws UnsupportedEncodingException {
+		if(null == str) return false;
 		int len = str.getBytes(charset).length;
 		return len >= min && len <= max;
 	}
@@ -663,6 +688,7 @@ public class Validator {
 	 *             if charset not support
 	 */
 	public static boolean isByteLength(String str, String charset, int min) throws UnsupportedEncodingException {
+		if(null == str) return false;
 		return str.getBytes(charset).length <= min;
 	}
 
@@ -674,6 +700,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isUUID(String str) {
+		if(null == str) return false;
 		return UUID.matcher(str).matches();
 	}
 
@@ -687,6 +714,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isUUID(String str, UUIDVersion version) {
+		if(null == str) return false;
 		switch (version) {
 		case uuidv3:
 			return UUID3.matcher(str).matches();
@@ -706,6 +734,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isDate(String str) {
+		if(isBlank(str)) return false;
 		DateFormat dateFormat = DateFormat.getDateInstance();
 		try {
 			return null == dateFormat.parse(str);
@@ -855,6 +884,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isMobilePhone(String str, PhoneLocale locale) {
+		if(isBlank(str)) return false;
 		return PHONES_REGS.get(locale).matcher(str).matches();
 	}
 
@@ -866,6 +896,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isMultibyte(String str) {
+		if(null == str) return false;
 		return MULTIBYTE.matcher(str).matches();
 	}
 
@@ -877,6 +908,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isAscii(String str) {
+		if(null == str) return false;
 		return ASCII.matcher(str).matches();
 	}
 
@@ -888,6 +920,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isFullWidth(String str) {
+		if(null == str) return false;
 		return FULL_WIDTH.matcher(str).matches();
 	}
 
@@ -899,6 +932,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isHalfWidth(String str) {
+		if(null == str) return false;
 		return HALF_WIDTH.matcher(str).matches();
 	}
 
@@ -910,6 +944,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isVariableWidth(String str) {
+		if(null == str) return false;
 		return isFullWidth(str) && isHalfWidth(str);
 	}
 
@@ -921,6 +956,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isSurrogatePair(String str) {
+		if(null == str) return false;
 		return SURROGATE_PAIR.matcher(str).matches();
 	}
 
@@ -932,6 +968,7 @@ public class Validator {
 	 * @return true if matched
 	 */
 	public static boolean isMongoId(String str) {
+		if(null == str) return false;
 		return isHexadecimal(str) && 24 == str.length();
 	}
 
@@ -947,6 +984,7 @@ public class Validator {
 	 * @return true if |num - value| &lt;= d
 	 */
 	public static boolean diff(String num, double value, String d) {
+		if(null == num) return false;
 		BigDecimal n1 = new BigDecimal(num);
 		BigDecimal n2 = new BigDecimal(value);
 		BigDecimal n3 = new BigDecimal(d).abs();
@@ -965,6 +1003,7 @@ public class Validator {
 	 * @return true if |num - value| &lt;= d
 	 */
 	public static boolean diff(String num, String value, String d) {
+		if(null == num) return false;
 		BigDecimal n1 = new BigDecimal(num);
 		BigDecimal n2 = new BigDecimal(value);
 		BigDecimal n3 = new BigDecimal(d).abs();
@@ -983,6 +1022,7 @@ public class Validator {
 	 * @return true if |num - value| &lt;= d
 	 */
 	public static boolean diff(String num, double value, double d) {
+		if(null == num) return false;
 		BigDecimal n1 = new BigDecimal(num);
 		BigDecimal n2 = new BigDecimal(value);
 		BigDecimal n3 = new BigDecimal(d).abs();
@@ -1005,6 +1045,7 @@ public class Validator {
 	 *             bad date string or format
 	 */
 	public static Date parseDate(String str, String format) throws ParseException {
+		if(null == str) return null;
 		return new SimpleDateFormat(format).parse(str);
 	}
 
@@ -1028,9 +1069,10 @@ public class Validator {
 	 * 
 	 * @param str
 	 *            integer string
-	 * @return int
+	 * @return Integer
 	 */
-	public static int toInt(String str) {
+	public static Integer toInt(String str) {
+		if(null == str) return null;
 		return Integer.valueOf(str);
 	}
 
@@ -1041,9 +1083,10 @@ public class Validator {
 	 *            number string
 	 * @param radix
 	 *            the radix of the number string
-	 * @return int
+	 * @return Integer
 	 */
-	public static int toInt(String str, int radix) {
+	public static Integer toInt(String str, int radix) {
+		if(null == str) return null;
 		return Integer.valueOf(str, radix);
 	}
 
@@ -1054,7 +1097,8 @@ public class Validator {
 	 *            a float string
 	 * @return float
 	 */
-	public static float toFloat(String str) {
+	public static Float toFloat(String str) {
+		if(null == str) return null;
 		return Float.valueOf(str);
 	}
 
@@ -1063,9 +1107,10 @@ public class Validator {
 	 * 
 	 * @param str
 	 *            a double string
-	 * @return double
+	 * @return Double
 	 */
-	public static double toDouble(String str) {
+	public static Double toDouble(String str) {
+		if(null == str) return null;
 		return Double.valueOf(str);
 	}
 
@@ -1076,7 +1121,8 @@ public class Validator {
 	 *            a string
 	 * @return true if "true" equals str(ignore case) or "1" equals str
 	 */
-	public static boolean toBoolean(String str) {
+	public static Boolean toBoolean(String str) {
+		if(null == str) return null;
 		if ("true".equalsIgnoreCase(str) || "1".equals(str)) {
 			return true;
 		}
@@ -1091,6 +1137,7 @@ public class Validator {
 	 * @return trimed string
 	 */
 	public static String trim(String str) {
+		if(null == str) return null;
 		return str.trim();
 	}
 
@@ -1104,6 +1151,7 @@ public class Validator {
 	 * @return trimed string
 	 */
 	public static String trim(String str, String chars) {
+		if(null == str) return null;
 		return rtrim(ltrim(str, chars), chars);
 	}
 
@@ -1115,7 +1163,8 @@ public class Validator {
 	 * @return trimed string
 	 */
 	public static String ltrim(String str) {
-		return null;
+		if(null == str) return null;
+		return str.replaceFirst("\\s+", "");
 	}
 
 	/**
@@ -1128,6 +1177,7 @@ public class Validator {
 	 * @return trimed string
 	 */
 	public static String ltrim(String str, String chars) {
+		if(null == str) return null;
 		if (0 == str.indexOf(chars)) {
 			return str.substring(chars.length());
 		}
@@ -1142,7 +1192,8 @@ public class Validator {
 	 * @return trimed string
 	 */
 	public static String rtrim(String str) {
-		return null;
+		if(null == str) return null;
+		return str.replaceAll("\\s+$", "");
 	}
 
 	/**
@@ -1155,6 +1206,7 @@ public class Validator {
 	 * @return the trimed string
 	 */
 	public static String rtrim(String str, String chars) {
+		if(null == str) return null;
 		int i = str.lastIndexOf(chars);
 		if (i == str.length() - chars.length()) {
 			return str.substring(0, i);
@@ -1170,6 +1222,7 @@ public class Validator {
 	 * @return the escpaed string
 	 */
 	public static String escape(String str) {
+		if(null == str) return null;
 		Matcher matcher = Pattern.compile("").matcher(str);
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("&", "&amp;");
@@ -1194,6 +1247,7 @@ public class Validator {
 	 * @return the striped string
 	 */
 	public static String stripLow(String str) {
+		if(null == str) return null;
 		return stripLow(str, false);
 	}
 
@@ -1208,6 +1262,7 @@ public class Validator {
 	 * @return the striped string
 	 */
 	public static String stripLow(String str, boolean keepNewLines) {
+		if(null == str) return null;
 		String chars = keepNewLines ? "\\x00-\\x09\\x0B\\x0C\\x0E-\\x1F\\x7F" : "\\x00-\\x1F\\x7F";
 		return blacklist(str, chars);
 	}
@@ -1223,6 +1278,7 @@ public class Validator {
 	 * @return a filtered string
 	 */
 	public static String whitelist(String str, String chars) {
+		if(null == str) return null;
 		return str.replaceAll("[^" + chars + "]+", "");
 	}
 
@@ -1238,6 +1294,7 @@ public class Validator {
 	 * @return a filtered string
 	 */
 	public static String blacklist(String str, String chars) {
+		if(null == str) return null;
 		return str.replaceAll("[" + chars + "]+", "");
 	}
 
@@ -1248,6 +1305,7 @@ public class Validator {
 	 * @return
 	 */
 	static String toHexString(byte[] bs) {
+		if(null == bs) return null;
 		char[] strDigits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 		int l = bs.length;
 		char r[] = new char[l * 2];
@@ -1269,6 +1327,7 @@ public class Validator {
 	 * @return the hexadecimal string of the md5 result
 	 */
 	public static String md5(String str) {
+		if(null == str) return null;
 		try {
 			return sig("MD5", str);
 		} catch (NoSuchAlgorithmException e) {
@@ -1284,6 +1343,7 @@ public class Validator {
 	 * @return the hexadecimal string of the sha1 result
 	 */
 	public static String sha1(String str) {
+		if(null == str) return null;
 		try {
 			return sig("SHA1", str);
 		} catch (NoSuchAlgorithmException e) {
@@ -1301,6 +1361,7 @@ public class Validator {
 	 *             bad InputStream
 	 */
 	public static String md5(InputStream in) throws IOException {
+		if(null == in) return null;
 		try {
 			return sig("MD5", in);
 		} catch (NoSuchAlgorithmException e) {
@@ -1318,6 +1379,7 @@ public class Validator {
 	 *             bad InputStream
 	 */
 	public static String sha1(InputStream in) throws IOException {
+		if(null == in) return null;
 		try {
 			return sig("SHA1", in);
 		} catch (NoSuchAlgorithmException e) {
@@ -1337,6 +1399,7 @@ public class Validator {
 	 *             if algorithm not to be supported
 	 */
 	public static String sig(String alg, String str) throws NoSuchAlgorithmException {
+		if(null == str) return null;
 		MessageDigest digest = MessageDigest.getInstance(alg);
 		digest.update(str.getBytes());
 		return toHexString(digest.digest());
@@ -1356,6 +1419,7 @@ public class Validator {
 	 *             bad InputStream
 	 */
 	public static String sig(String alg, InputStream in) throws NoSuchAlgorithmException, IOException {
+		if(null == in) return null;
 		MessageDigest digest = MessageDigest.getInstance(alg);
 		byte[] buffer = new byte[1024];
 		int len;
@@ -1373,6 +1437,7 @@ public class Validator {
 	 * @return base64 encoded string
 	 */
 	public static String encodeBase64(String str) {
+		if(null == str) return null;
 		return encodeBase64(str.getBytes());
 	}
 
@@ -1384,6 +1449,7 @@ public class Validator {
 	 * @return base64 encoded string
 	 */
 	public static String encodeBase64(byte[] bs) {
+		if(null == bs) return null;
 		return new BASE64Encoder().encode(bs);
 	}
 
@@ -1395,6 +1461,7 @@ public class Validator {
 	 * @return base64 encoded string
 	 */
 	public static String encodeBase64(ByteBuffer bs) {
+		if(null == bs) return null;
 		return new BASE64Encoder().encode(bs);
 	}
 
@@ -1408,6 +1475,7 @@ public class Validator {
 	 *             bad InputStream
 	 */
 	public static String encodeBase64(InputStream in) throws IOException {
+		if(null == in) return null;
 		BASE64Encoder encoder = new BASE64Encoder();
 		OutputStream out = new ByteArrayOutputStream();
 		encoder.encode(in, out);
@@ -1424,6 +1492,7 @@ public class Validator {
 	 *             bad base64 encoded string
 	 */
 	public static byte[] decodeBase64(String str) throws IOException {
+		if(null == str) return null;
 		return new BASE64Decoder().decodeBuffer(str);
 	}
 
@@ -1437,6 +1506,7 @@ public class Validator {
 	 *             bad base64 encoded string
 	 */
 	public static String decodeBase64AsString(String str) throws IOException {
+		if(null == str) return null;
 		return new String(decodeBase64(str));
 	}
 
